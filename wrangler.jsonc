@@ -1,0 +1,8 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "zkat-rewards",
+  "main": "dist/server/index.js",
+  "compatibility_date": "2026-09-13",
+  "workers_dev": true,
+  "build": { "command": "npm run build" }
+}

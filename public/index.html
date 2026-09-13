@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090b">
+<title>$ZKat — Zero Knowledge Cat</title><meta name="description" content="A Nockchain-inspired memecoin on Base. Zero Knowledge Cat turns the ZK idea into a meme, with a live NOCK rewards pool.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preload" href="/outfit-bold.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="/inter.ttf" as="font" type="font/ttf" crossorigin><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="page">
+  <header class="topbar"><a class="brand" href="/" aria-label="ZKat home">$ZKAT<span>ZERO KNOWLEDGE CAT</span></a><span class="network"><i aria-hidden="true"></i>ON BASE</span></header>
+  <section class="hero" aria-labelledby="brand-title"><p class="eyebrow">NOCK-INSPIRED MEMECOIN / BUILT ON BASE</p><h1 id="brand-title">$ZKAT<span aria-hidden="true">.</span></h1><p class="hero-quote">“He heard zero knowledge<br>and <em>took it personally.</em>”</p><p class="hero-context">Zero Knowledge Cat. Inspired by Nockchain.<br>A blank stare. A pool of NOCK.</p></section>
+  <section class="pool-window" aria-labelledby="pool-heading">
+    <div class="window-header"><h2 id="pool-heading">The rewards pool</h2><span id="connection" class="connection" data-state="connecting"><i aria-hidden="true"></i><span>CONNECTING</span></span></div>
+    <div class="pool-stage"><figure class="pool-scene" id="pool-scene"><img id="pool-image" src="/nock-overflow.webp" width="1254" height="1254" alt="Zero Knowledge Cat drooling into a blue pool that overflows around the live NOCK rewards" fetchpriority="high"><canvas id="pool-animation" aria-hidden="true"></canvas></figure>
+    <div class="readout"><p class="readout-label">TOTAL REWARDS DISTRIBUTED</p><div class="amount"><strong id="total">—</strong><span>NOCK</span></div><p id="status" class="status" role="status">Connecting to BaseStonk</p><p id="reward-event" class="reward-event" role="status"></p></div></div>
+    <div class="pool-caption"><span>Zero knowledge. Undeniable drool.</span><span>NOCK / BASE</span></div>
+  </section>
+  <section class="nock-story" aria-labelledby="nock-heading">
+    <p class="story-eyebrow">THE PROOF BEHIND THE PUNCHLINE</p>
+    <h2 id="nock-heading">Serious cryptography.<br><em>Deeply unserious cat.</em></h2>
+    <p class="story-copy">Nockchain uses zero-knowledge proofs in its proof-of-work mining. Its vision brings useful computation and privacy together. $ZKat turns that inspiration into a cat with absolutely nothing to disclose.</p>
+    <div class="nock-principles"><span>ZERO KNOWLEDGE</span><span>PRIVACY AS A PRINCIPLE</span><span>NOCK REWARDS</span></div>
+    <blockquote class="nock-quote"><p>“It’s sound money backed by useful cryptographic work.”</p><cite><a href="https://www.nockchain.org/manifesto" target="_blank" rel="noopener noreferrer">Nockchain Manifesto <span aria-hidden="true">↗</span></a></cite></blockquote>
+    <details class="nock-context"><summary>Why the name? <span aria-hidden="true">+</span></summary><div><p><strong>ZK</strong> is the zero-knowledge reference. <strong>Kat</strong> is the punchline. Nockchain’s miners produce proofs of computation; our cat appears to have no computation to prove.</p><p>$ZKat is a Nockchain-inspired memecoin on Base, with NOCK rewards reported by BaseStonk. The privacy theme reflects Nockchain’s vision: its current docs say private transactions are still in development, and mining proofs do not hide transaction values or chain state.</p><a href="https://docs.nockchain.org/" target="_blank" rel="noopener noreferrer">Read Nockchain’s current documentation ↗</a><a href="https://www.nockchain.org/writings/puzzle" target="_blank" rel="noopener noreferrer">How Nockchain’s ZK proof-of-work works ↗</a></div></details>
+  </section>
+  <footer class="contract-bar"><div class="contract-info"><span class="ca-label">CA <span aria-hidden="true">/</span> BASE</span><span class="address">0x60555Ab88a0CAaf893Ab284C1332c9D0A05Af222</span></div><button id="copy" class="copy-button" type="button" aria-label="Copy ZKat contract address"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg><span>Copy CA</span></button><p id="copy-status" class="copy-status" role="status"></p></footer>
+</main>
+<script src="/app.js" defer></script><script src="/pool.js" defer></script>
+</body>
+</html>
