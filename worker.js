@@ -4,6 +4,23 @@ const NOCK = '0x9b5e262cf9bb04869ab40b19af91d2dc85761722';
 const SOURCE = 'https://api.basestonk.io/api/launchpad/tokens/' + CONTRACT + '?chain=base';
 let cached = null;
 let inFlight = null;
+function readDevLock(token) {
+  // BaseStonk v6 launch tokens use 18 decimals; NOCK reward decimals are separate.
+  const address = value => typeof value === 'string' && /^0x[0-9a-fA-F]{40}$/.test(value) && !/^0x0{40}$/.test(value);
+  const raw = value => typeof value === 'string' && /^\d{1,100}$/.test(value);
+  const seconds = value => Number.isSafeInteger(value) && value >= 0 && value <= 100000000000;
+  try {
+    const state = token.chainState, vesting = state?.vesting;
+    if (token.generation !== 'v6' || !address(token.creator) || !state || !vesting || !Array.isArray(vesting.schedules) || vesting.schedules.length > 128) throw new Error('Missing vesting data');
+    if (state.vault === null && vesting.schedules.length === 0) return {status:'none',creator:token.creator};
+    if (!address(state.vault) || !address(state.beneficiary) || !vesting.schedules.length) throw new Error('Missing vault');
+    const schedules = vesting.schedules.map(s => {
+      if (!raw(s.total) || !raw(s.released) || BigInt(s.released) > BigInt(s.total) || !seconds(s.start) || !seconds(s.duration) || !seconds(s.cliff) || !seconds(s.start+s.duration)) throw new Error('Invalid schedule');
+      return {totalRaw:s.total,releasedRaw:s.released,start:s.start,duration:s.duration,cliff:s.cliff,end:s.start+s.duration};
+    });
+    return {status:'reported',creator:token.creator,vault:state.vault,beneficiary:state.beneficiary,decimals:18,schedules,block:Number.isSafeInteger(state.block)?state.block:null};
+  } catch { return {status:'unavailable'}; }
+}
 async function readRewards() {
   if (cached && Date.now() - cached.time < 10000) return cached.value;
   if (inFlight) return inFlight;
@@ -15,7 +32,7 @@ async function readRewards() {
     if (token?.address?.toLowerCase() !== CONTRACT.toLowerCase() || token.chain !== 'base' || token.pairToken?.toLowerCase() !== NOCK || token.chainState?.pairSymbol !== 'NOCK' || typeof token.rewardsPair !== 'string' || !/^\d+$/.test(token.rewardsPair) || !Number.isInteger(decimals) || decimals < 0 || decimals > 36 || !Number.isFinite(Date.parse(token.updatedAt))) throw new Error('Unverified rewards data');
     // BaseStonk's token page maps rewardsPair to "Paid to holders".
     // This reports that platform metric, not a separate audit of individual wallet receipts.
-    const value = { contract: CONTRACT, symbol: 'NOCK', totalRaw: token.rewardsPair, decimals, updatedAt: token.updatedAt, source: 'BaseStonk' };
+    const value = { contract: CONTRACT, symbol: 'NOCK', totalRaw: token.rewardsPair, decimals, updatedAt: token.updatedAt, source: 'BaseStonk', devLock:readDevLock(token) };
     cached = { time: Date.now(), value };
     return value;
   })();

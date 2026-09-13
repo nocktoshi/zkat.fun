@@ -3,7 +3,7 @@
 Checks completed for this export:
 
 - Clean portable build completed with no application dependencies and no original hosting manifest.
-- Three automated tests passed: active page/assets and HTTP behavior; reward-source validation, integer precision, caching and failure handling; client baseline/increase/correction/outage/stale-data/recovery handling.
+- Five automated tests passed: active page/assets and HTTP behavior; reward-source validation, integer precision, caching and failure handling; client baseline/increase/correction/outage/stale-data/recovery handling; independent developer-vesting validation; active/ended/unavailable/stale vesting display.
 - The included Node server started independently and served the page, WebP headers, and correct rejection of unsupported methods over local HTTP.
 - Optional JPEG metadata removal preserved decoded image pixels.
 - Font license files are included.

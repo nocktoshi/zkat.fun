@@ -16,3 +16,7 @@ The user approved this design. Your job is to run, verify, and launch the suppli
 The visual liquid flows continuously. The extra drop and splash are tied to a strictly positive increase in the server-reported total. Baseline loads, unchanged totals, errors, stale snapshots, and temporary downward corrections do not trigger fake rewards. Multiple payouts between checks are aggregated into one observed increase. Motion respects the visitor's reduced-motion setting.
 
 No wallet seed, private key, deployer key, or signing action is required to host this read-only website.
+
+## Latest approved additions
+
+Keep the highlighted full contract address and Copy CA action immediately above the pool. Keep the live dev-buy vesting panel directly below it, including creator/vault/beneficiary links, dates, released amount, source timestamp, and honest unavailable/stale states. A public wallet address is intentionally displayed at the owner’s request; do not add the owner’s real-world name or personal contact details. Preserve separate ZKAT (18) and NOCK reward (16 from the source) decimal handling. Do not call this an entire-wallet lock or an LP lock.

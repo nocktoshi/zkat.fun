@@ -1,6 +1,6 @@
 # $ZKat — Claude launch package
 
-This is the completed website, ready for Claude to launch. It includes the approved design, local fonts and artwork, animated pool, live NOCK rewards endpoint, portable hosting files, and checks. No ChatGPT account or original project is required.
+This is the completed website, ready for Claude to launch. It includes the approved design, local fonts and artwork, animated pool, live NOCK rewards and developer vesting endpoint, prominent copyable contract, portable hosting files, and checks. No ChatGPT account or original project is required.
 
 **Give Claude the whole ZIP and tell it: “Read CLAUDE.md and launch this completed site. Preserve its design and the owner-privacy requirements.”**
 

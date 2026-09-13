@@ -46,7 +46,7 @@ test('server validates reward identity, preserves precision and caches successfu
 test('only new observed increases trigger extra drips, including smallest units',async()=>{
  const elements=new Map();const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',dataset:{},addEventListener(){}});return elements.get(id)};
  const events=[];let next;
- const context=vm.createContext({document:{hidden:false,getElementById:el,querySelector:el,addEventListener(){}},window:{dispatchEvent:e=>events.push(e)},navigator:{},CustomEvent:class{constructor(type,data){this.type=type;this.detail=data.detail}},AbortSignal,setTimeout:()=>1,clearTimeout(){},setInterval(){},fetch:async()=>{if(next instanceof Error)throw next;return{ok:true,json:async()=>next}},Date,BigInt});
+ const context=vm.createContext({document:{hidden:false,getElementById:el,querySelector:el,addEventListener(){}},window:{dispatchEvent:e=>{if(e.type==='zkat:reward')events.push(e)}},navigator:{},CustomEvent:class{constructor(type,data={}){this.type=type;this.detail=data.detail}},AbortSignal,setTimeout:()=>1,clearTimeout(){},setInterval(){},fetch:async()=>{if(next instanceof Error)throw next;return{ok:true,json:async()=>next}},Date,BigInt});
  vm.runInContext(readFileSync('public/app.js','utf8').replace('\nrefresh();','\n'),context);
  const base={contract:CA,symbol:'NOCK',decimals:16,updatedAt:valid.token.updatedAt};
  const refresh=()=>vm.runInContext('refresh()',context);
@@ -56,4 +56,36 @@ test('only new observed increases trigger extra drips, including smallest units'
  next=new Error('offline');await refresh();assert.equal(events.length,1);assert.equal(el('connection').dataset.state,'offline');assert.equal(el('total').textContent,'100.00');
  next={...base,totalRaw:'2000000000000000000',updatedAt:'2026-09-12T07:01:49Z'};await refresh();assert.equal(events.length,1);
  next={...base,totalRaw:'1000000000000000002'};await refresh();assert.equal(events.length,2);assert.equal(el('connection').dataset.state,'live');
+});
+
+test('vesting records validate independently from rewards and use token decimals',async()=>{
+ const original=globalThis.fetch;
+ const creator='0x1111111111111111111111111111111111111111';
+ const vault='0x2222222222222222222222222222222222222222';
+ const state={...valid.token.chainState,block:123,vault,beneficiary:creator,vesting:{schedules:[{total:'100000000000000000000',released:'1000000000000000000',start:1789255717,duration:2592000,cliff:0}]}};
+ let fixture={token:{...valid.token,generation:'v6',creator,chainState:state}};
+ globalThis.fetch=async()=>Response.json(fixture);
+ try{
+  const request=()=>new Request('https://test.invalid/api/rewards');
+  const data=await (await (await fresh()).fetch(request())).json();
+  assert.equal(data.devLock.status,'reported');assert.equal(data.devLock.decimals,18);assert.equal(data.decimals,16);assert.equal(data.devLock.schedules[0].end,1791847717);
+  fixture={token:{...fixture.token,chainState:{...state,vesting:{schedules:[{...state.vesting.schedules[0],released:'99999999999999999999999'}]}}}};
+  const bad=await (await fresh()).fetch(request());assert.equal(bad.status,200);assert.equal((await bad.json()).devLock.status,'unavailable');
+  fixture={token:{...fixture.token,chainState:{...state,vault:null,vesting:{schedules:[]}}}};
+  assert.equal((await (await (await fresh()).fetch(request())).json()).devLock.status,'none');
+ }finally{globalThis.fetch=original}
+});
+
+test('vesting UI distinguishes active, ended, unavailable and stale states',()=>{
+ const elements=new Map(),handlers=new Map();
+ const node=()=>({textContent:'',hidden:false,style:{},children:[],parts:new Map(),append(v){this.children.push(v)},replaceChildren(){this.children=[]},setAttribute(){},querySelector(k){if(!this.parts.has(k))this.parts.set(k,node());return this.parts.get(k)}});
+ const el=id=>{if(!elements.has(id))elements.set(id,node());return elements.get(id)};
+ const context=vm.createContext({document:{getElementById:el,createElement:node},window:{addEventListener:(type,fn)=>handlers.set(type,fn)},Date,BigInt});
+ vm.runInContext(readFileSync('public/locks.js','utf8'),context);
+ const v={status:'reported',decimals:18,creator:'0x1111111111111111111111111111111111111111',vault:'0x2222222222222222222222222222222222222222',beneficiary:'0x1111111111111111111111111111111111111111',block:123,schedules:[{totalRaw:'100000000000000000000',releasedRaw:'1000000000000000000',start:1789255717,duration:2592000,cliff:0,end:1791847717}]};
+ const emit=(devLock,time)=>handlers.get('zkat:snapshot')({detail:{devLock,updatedAt:new Date(time*1000).toISOString()}});
+ emit(v,1789256317);assert.equal(el('lock-state').textContent,'VESTING ACTIVE');assert.equal(el('lock-content').hidden,false);assert.equal(el('lock-allocation').textContent,'100.00');assert.equal(el('lock-released').textContent,'1.00');assert.equal(el('dev-wallet').href,'https://basescan.org/address/'+v.creator);
+ handlers.get('zkat:offline')();assert.equal(el('lock-state').textContent,'STALE DATA');assert.equal(el('lock-content').hidden,false);
+ emit(v,1791847718);assert.equal(el('lock-state').textContent,'SCHEDULE ENDED');
+ emit({status:'unavailable'},1791847718);assert.equal(el('lock-state').textContent,'UNAVAILABLE');assert.equal(el('lock-content').hidden,true);
 });

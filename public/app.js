@@ -40,9 +40,11 @@ async function refresh() {
     lastSuccess = new Date(data.updatedAt);
     status.textContent = 'BaseStonk · checking every 15s';
     status.title = 'Rewards total reported by BaseStonk. Updated ' + lastSuccess.toLocaleString();
+    window.dispatchEvent(new CustomEvent('zkat:snapshot', {detail:data}));
     document.getElementById('connection').dataset.state = 'live';
     document.querySelector('#connection span').textContent = 'LIVE REWARDS';
   } catch {
+    window.dispatchEvent(new CustomEvent('zkat:offline'));
     document.getElementById('connection').dataset.state = 'offline';
     document.querySelector('#connection span').textContent = 'RECONNECTING';
     status.textContent = lastSuccess ? 'Last updated ' + lastSuccess.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : 'Rewards temporarily unavailable';

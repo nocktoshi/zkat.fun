@@ -19,3 +19,5 @@ If the owner chooses a custom domain, choose available registration privacy and 
 ## Limits
 
 The contract address is intentionally public. On-chain deployment/funding history, existing social posts, prior hosting URLs, domain records, and previously published files can connect a project to its creator. Removing information from this new package cannot erase prior publications. Infrastructure providers may retain IP, access, billing, or account logs independently of the application. This package is an identity-minimized public handoff, not a guarantee of anonymity.
+
+The owner has explicitly requested public developer-wallet and vesting-vault transparency on the site. The live feed now supplies those on-chain addresses and the beneficiary address. Preserve this requested functionality while keeping real-world identity and personal contact details out of the site and handoff.
