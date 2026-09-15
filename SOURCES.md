@@ -15,6 +15,8 @@ Research checked 2026-09-13. Recheck current documentation if altering factual c
   Trade tax is charged on every buy and sell, taken inside the swap. Transfers are free. The platform cut comes out of the tax rather than on top of it.
 - BaseStonk holding: https://docs.basestonk.io/holding
   Holder payouts arrive automatically as people trade; claiming is optional.
+- Project X account: https://x.com/zkat_nock
+  Public project handle, added at the owner’s request. Not a real-world identity.
 - Cloudflare Wrangler configuration: https://developers.cloudflare.com/workers/wrangler/configuration/
 - Cloudflare compatibility dates: https://developers.cloudflare.com/workers/configuration/compatibility-dates/
 - Cloudflare deployment commands: https://developers.cloudflare.com/workers/wrangler/commands/workers/

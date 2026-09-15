@@ -18,6 +18,8 @@ test('page, referenced assets, MIME types and method handling',async()=>{
  assert.ok(html.includes('The trading tax.'));
  assert.ok(html.includes('Holders receive that tax automatically as'));
  assert.ok(html.includes('https://basestonk.io/tokens/'+CA));
+ assert.ok(html.includes('https://x.com/zkat_nock'));
+ assert.ok(!html.includes('href="/flywheel"'));assert.ok(!html.includes('The cat is the'));
  for(const [,path] of html.matchAll(/(?:src|href)="(\/[^\"]*)"/g)){
   const r=await app.fetch(new Request('https://test.invalid'+path));
   assert.equal(r.status,200,path);assert.ok((await r.arrayBuffer()).byteLength>0);
@@ -27,6 +29,13 @@ test('page, referenced assets, MIME types and method handling',async()=>{
  assert.equal((await app.fetch(new Request('https://test.invalid/',{method:'POST'}))).status,405);
  assert.equal(await (await app.fetch(new Request('https://test.invalid/',{method:'HEAD'}))).text(),'');
  assert.ok(existsSync('licenses/Inter-OFL.txt'));assert.ok(existsSync('licenses/Outfit-OFL.txt'));
+ const flywheel=await app.fetch(new Request('https://test.invalid/flywheel'));
+ assert.equal(flywheel.status,200);
+ const note=await flywheel.text();
+ assert.ok(note.includes('The cat is the'));assert.ok(note.includes('noindex'));assert.ok(note.includes('https://x.com/zkat_nock'));
+ assert.ok(note.includes('You cannot buy $ZKAT without buying NOCK'));
+ assert.equal((await app.fetch(new Request('https://test.invalid/flywheel/'))).status,200);
+ assert.equal(await (await app.fetch(new Request('https://test.invalid/flywheel',{method:'HEAD'}))).text(),'');
 });
 
 test('server validates reward identity, preserves precision and caches successful responses',async()=>{
