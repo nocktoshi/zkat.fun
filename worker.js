@@ -58,7 +58,8 @@ export default {
       try { return Response.json(await readRewards(), {headers:{'Cache-Control':'no-store'}}); }
       catch { return Response.json({error:'Rewards temporarily unavailable'}, {status:503,headers:{'Cache-Control':'no-store'}}); }
     }
-    const asset = ASSETS[path === '/' ? '/index.html' : path];
+    const assetKey = path === '/' ? '/index.html' : (path === '/flywheel' || path === '/flywheel/' ? '/flywheel.html' : path);
+    const asset = ASSETS[assetKey];
     if (!asset) return new Response('Not found', {status:404});
     const headers = { 'Content-Type':asset.type,'Cache-Control':/\.(png|webp|jpeg)$/.test(path)?'public, max-age=86400':'public, max-age=60','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin' };
     return new Response(request.method === 'HEAD' ? null : Uint8Array.from(atob(asset.data), c=>c.charCodeAt(0)), {headers});
