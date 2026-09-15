@@ -1,6 +1,6 @@
 # $ZKat — Claude launch package
 
-This is the completed website, ready for Claude to launch. It includes the approved design, local fonts and artwork, animated pool, live NOCK rewards and developer vesting endpoint, prominent copyable contract, portable hosting files, and checks. No ChatGPT account or original project is required.
+This is the completed website, ready for Claude to launch. It includes the approved design, local fonts and artwork, animated pool, trading-tax explanation, live NOCK and ZKAT holder-reward totals, developer vesting endpoint, prominent copyable contract, portable hosting files, and checks. No ChatGPT account or original project is required.
 
 **Give Claude the whole ZIP and tell it: “Read CLAUDE.md and launch this completed site. Preserve its design and the owner-privacy requirements.”**
 
@@ -42,7 +42,7 @@ Use a Node 22+ web service with build command `npm run build` and start command 
 - One central overflowing blue cat pool; no meme gallery.
 - Near-black, muted gold, white, and blue. Modern layout with early-2000s computer-room artwork.
 - Local Outfit/Inter fonts and gold italic quotes.
-- Live reward checks, accurate integer math, copyable contract, graceful outage display, reduced-motion support.
+- Live reward checks, accurate integer math, copyable contract, trading-tax copy for NOCK and ZKAT holder payouts, graceful outage display, reduced-motion support.
 - Nockchain explanation and attributed source quote. Never claim transfers are anonymous or that this is an official Nockchain product.
 
 ## Files

@@ -21,6 +21,18 @@ function readDevLock(token) {
     return {status:'reported',creator:token.creator,vault:state.vault,beneficiary:state.beneficiary,decimals:18,schedules,block:Number.isSafeInteger(state.block)?state.block:null};
   } catch { return {status:'unavailable'}; }
 }
+function readTax(token) {
+  // Buy/sell tax is immutable after launch. ZKAT holder payouts use 18 token decimals.
+  const bps = value => Number.isInteger(value) && value >= 0 && value <= 1000;
+  try {
+    if (!bps(token.buyTaxBps) || !bps(token.sellTaxBps)) throw new Error('Missing tax');
+    let tokenRewards = null;
+    if (typeof token.rewardsToken === 'string' && /^\d{1,100}$/.test(token.rewardsToken)) {
+      tokenRewards = {symbol:'ZKAT',totalRaw:token.rewardsToken,decimals:18};
+    }
+    return {status:'reported',buyBps:token.buyTaxBps,sellBps:token.sellTaxBps,tokenRewards};
+  } catch { return {status:'unavailable'}; }
+}
 async function readRewards() {
   if (cached && Date.now() - cached.time < 10000) return cached.value;
   if (inFlight) return inFlight;
@@ -30,9 +42,9 @@ async function readRewards() {
     const { token } = await response.json();
     const decimals = token?.chainState?.pairDecimals;
     if (token?.address?.toLowerCase() !== CONTRACT.toLowerCase() || token.chain !== 'base' || token.pairToken?.toLowerCase() !== NOCK || token.chainState?.pairSymbol !== 'NOCK' || typeof token.rewardsPair !== 'string' || !/^\d+$/.test(token.rewardsPair) || !Number.isInteger(decimals) || decimals < 0 || decimals > 36 || !Number.isFinite(Date.parse(token.updatedAt))) throw new Error('Unverified rewards data');
-    // BaseStonk's token page maps rewardsPair to "Paid to holders".
-    // This reports that platform metric, not a separate audit of individual wallet receipts.
-    const value = { contract: CONTRACT, symbol: 'NOCK', totalRaw: token.rewardsPair, decimals, updatedAt: token.updatedAt, source: 'BaseStonk', devLock:readDevLock(token) };
+    // BaseStonk's token page maps rewardsPair / rewardsToken to "Paid to holders".
+    // This reports those platform metrics, not a separate audit of individual wallet receipts.
+    const value = { contract: CONTRACT, symbol: 'NOCK', totalRaw: token.rewardsPair, decimals, updatedAt: token.updatedAt, source: 'BaseStonk', devLock:readDevLock(token), tax:readTax(token) };
     cached = { time: Date.now(), value };
     return value;
   })();

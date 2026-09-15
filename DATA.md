@@ -14,6 +14,16 @@
 
 This is BaseStonk's reported cumulative rewards paid to holders, not the pool's available balance, liquidity, APY, or a separate wallet-receipt audit. The page's cat pool is a visual metaphor. The site does not mine NOCK, generate rewards, distribute funds, or sign transactions.
 
+## Trading tax (live)
+
+The same response includes independently validated tax fields. Missing or invalid tax data does not fail the NOCK rewards total.
+
+- Buy tax: `token.buyTaxBps` (integer, 0–1000)
+- Sell tax: `token.sellTaxBps` (integer, 0–1000)
+- ZKAT paid to holders: `token.rewardsToken` (nonnegative integer string, **18** token decimals)
+
+BaseStonk’s token page maps `rewardsPair` to pair-asset “Paid to holders” (NOCK) and `rewardsToken` to token-asset “Paid to holders” (ZKAT). Buys and sells of $ZKAT each pay this tax inside the Uniswap v4 swap; ordinary transfers do not. Pair-side fees are paid in NOCK. Token-side fees are paid in ZKAT. BaseStonk takes its platform share from the tax; the remainder is paid to holders automatically as people trade. The extra pool drip still tracks only a positive increase in `rewardsPair`. Do not use the NOCK pair’s 16 decimals for ZKAT, and do not invent rates or totals when these fields are missing.
+
 The Worker validates the contract, chain, pair token, symbol, nonnegative integer amount, decimal precision, and timestamp. The browser uses BigInt and string formatting to show two decimals; event detection uses full precision. Do not replace this with floating-point arithmetic.
 
 The client checks every 15 seconds while visible and immediately on returning to the page. The Worker caches successful results for up to 10 seconds per isolate and merges overlapping upstream requests. BaseStonk may update its own data less frequently, so this is polling, not a transaction-by-transaction subscription.

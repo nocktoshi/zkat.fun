@@ -12,6 +12,34 @@ function formatUnits(raw, decimals) {
   const fraction = decimals ? digits.slice(-decimals).slice(0, 2).padEnd(2, '0') : '00';
   return BigInt(integer).toLocaleString('en-US') + '.' + fraction;
 }
+function formatBps(bps) {
+  return (bps / 100).toLocaleString('en-US', { maximumFractionDigits: 2 }) + '%';
+}
+function renderTax(data, stale) {
+  const state = document.getElementById('tax-state');
+  const updated = document.getElementById('tax-updated');
+  const tax = data?.tax;
+  if (stale) {
+    state.textContent = lastSuccess ? 'STALE DATA' : 'UNAVAILABLE';
+    return;
+  }
+  if (tax?.status !== 'reported' || !Number.isInteger(tax.buyBps) || !Number.isInteger(tax.sellBps) || tax.buyBps < 0 || tax.buyBps > 1000 || tax.sellBps < 0 || tax.sellBps > 1000) {
+    state.textContent = 'UNAVAILABLE';
+    document.getElementById('tax-buy').textContent = '—';
+    document.getElementById('tax-sell').textContent = '—';
+    document.getElementById('tax-nock').textContent = '—';
+    document.getElementById('tax-zkat').textContent = '—';
+    updated.textContent = 'Tax rates unavailable';
+    return;
+  }
+  document.getElementById('tax-buy').textContent = formatBps(tax.buyBps);
+  document.getElementById('tax-sell').textContent = formatBps(tax.sellBps);
+  document.getElementById('tax-nock').textContent = formatUnits(data.totalRaw, data.decimals);
+  const paid = tax.tokenRewards;
+  document.getElementById('tax-zkat').textContent = paid?.symbol === 'ZKAT' && paid.decimals === 18 && /^\d+$/.test(paid.totalRaw) ? formatUnits(paid.totalRaw, 18) : '—';
+  state.textContent = 'LIVE TAX';
+  updated.textContent = 'Source updated ' + lastSuccess.toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
+}
 async function refresh() {
   if (loading || document.hidden) return;
   loading = true;
@@ -43,11 +71,13 @@ async function refresh() {
     window.dispatchEvent(new CustomEvent('zkat:snapshot', {detail:data}));
     document.getElementById('connection').dataset.state = 'live';
     document.querySelector('#connection span').textContent = 'LIVE REWARDS';
+    renderTax(data, false);
   } catch {
     window.dispatchEvent(new CustomEvent('zkat:offline'));
     document.getElementById('connection').dataset.state = 'offline';
     document.querySelector('#connection span').textContent = 'RECONNECTING';
     status.textContent = lastSuccess ? 'Last updated ' + lastSuccess.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : 'Rewards temporarily unavailable';
+    renderTax(null, true);
   } finally { loading = false; }
 }
 document.getElementById('copy').addEventListener('click', async () => {
