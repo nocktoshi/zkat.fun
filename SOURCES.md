@@ -9,6 +9,12 @@ Research checked 2026-09-13. Recheck current documentation if altering factual c
 - Nockchain ZK-PoW puzzle: https://www.nockchain.org/writings/puzzle
   Background for the proof-of-computation explanation.
 - BaseStonk public token API: exact endpoint and interpretation in DATA.md.
+- BaseStonk token page: https://basestonk.io/tokens/0x60555Ab88a0CAaf893Ab284C1332c9D0A05Af222
+  Public UI for the same contract. It labels `rewardsPair` / `rewardsToken` as paid to holders and shows the immutable buy/sell tax.
+- BaseStonk fees: https://docs.basestonk.io/fees
+  Trade tax is charged on every buy and sell, taken inside the swap. Transfers are free. The platform cut comes out of the tax rather than on top of it.
+- BaseStonk holding: https://docs.basestonk.io/holding
+  Holder payouts arrive automatically as people trade; claiming is optional.
 - Cloudflare Wrangler configuration: https://developers.cloudflare.com/workers/wrangler/configuration/
 - Cloudflare compatibility dates: https://developers.cloudflare.com/workers/configuration/compatibility-dates/
 - Cloudflare deployment commands: https://developers.cloudflare.com/workers/wrangler/commands/workers/

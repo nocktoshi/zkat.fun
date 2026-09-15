@@ -2,19 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090b">
-<title>$ZKat — Zero Knowledge Cat</title><meta name="description" content="A Nockchain-inspired memecoin on Base. Zero Knowledge Cat turns the ZK idea into a meme, with a live NOCK rewards pool.">
+<title>$ZKat — Zero Knowledge Cat</title><meta name="description" content="A Nockchain-inspired memecoin on Base. Hold $ZKAT and the trading tax pays NOCK and ZKAT to holders, with a live NOCK rewards pool.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preload" href="/outfit-bold.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="/inter.ttf" as="font" type="font/ttf" crossorigin><link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <main class="page">
   <header class="topbar"><a class="brand" href="/" aria-label="ZKat home">$ZKAT<span>ZERO KNOWLEDGE CAT</span></a><span class="network"><i aria-hidden="true"></i>ON BASE</span></header>
-  <section class="hero" aria-labelledby="brand-title"><p class="eyebrow">NOCK-INSPIRED MEMECOIN / BUILT ON BASE</p><h1 id="brand-title">$ZKAT<span aria-hidden="true">.</span></h1><p class="hero-quote">“He heard zero knowledge<br>and <em>took it personally.</em>”</p><p class="hero-context">Zero Knowledge Cat. Inspired by Nockchain.<br>A blank stare. A pool of NOCK.</p></section>
+  <section class="hero" aria-labelledby="brand-title"><p class="eyebrow">NOCK-INSPIRED MEMECOIN / BUILT ON BASE</p><h1 id="brand-title">$ZKAT<span aria-hidden="true">.</span></h1><p class="hero-quote">“He heard zero knowledge<br>and <em>took it personally.</em>”</p><p class="hero-context">Zero Knowledge Cat. Inspired by Nockchain.<br>A blank stare. Holders earn NOCK and ZKAT.</p></section>
   <section class="contract-bar" aria-label="ZKat token contract"><div class="contract-info"><span class="ca-label">TOKEN CONTRACT <span aria-hidden="true">/</span> BASE</span><span class="address">0x60555Ab88a0CAaf893Ab284C1332c9D0A05Af222</span></div><button id="copy" class="copy-button" type="button" aria-label="Copy ZKat contract address"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg><span>Copy CA</span></button><p id="copy-status" class="copy-status" role="status"></p></section>
   <section class="pool-window" aria-labelledby="pool-heading">
-    <div class="window-header"><h2 id="pool-heading">The rewards pool</h2><span id="connection" class="connection" data-state="connecting"><i aria-hidden="true"></i><span>CONNECTING</span></span></div>
+    <div class="window-header"><h2 id="pool-heading">The NOCK rewards pool</h2><span id="connection" class="connection" data-state="connecting"><i aria-hidden="true"></i><span>CONNECTING</span></span></div>
     <div class="pool-stage"><figure class="pool-scene" id="pool-scene"><img id="pool-image" src="/nock-overflow.webp" width="1254" height="1254" alt="Zero Knowledge Cat drooling into a blue pool that overflows around the live NOCK rewards" fetchpriority="high"><canvas id="pool-animation" aria-hidden="true"></canvas></figure>
-    <div class="readout"><p class="readout-label">TOTAL REWARDS DISTRIBUTED</p><div class="amount"><strong id="total">—</strong><span>NOCK</span></div><p id="status" class="status" role="status">Connecting to BaseStonk</p><p id="reward-event" class="reward-event" role="status"></p></div></div>
-    <div class="pool-caption"><span>Zero knowledge. Undeniable drool.</span><span>NOCK / BASE</span></div>
+    <div class="readout"><p class="readout-label">NOCK PAID TO HOLDERS</p><div class="amount"><strong id="total">—</strong><span>NOCK</span></div><p id="status" class="status" role="status">Connecting to BaseStonk</p><p id="reward-event" class="reward-event" role="status"></p></div></div>
+    <div class="pool-caption"><span>Zero knowledge. Undeniable drool.</span><span>NOCK + ZKAT / BASE</span></div>
+  </section>
+  <section class="tax-panel" aria-labelledby="tax-heading">
+    <div class="lock-header"><div><p class="story-eyebrow">TRADING TAX · PAID TO HOLDERS</p><h2 id="tax-heading">The trading tax.</h2></div><span id="tax-state" class="lock-state">CHECKING</span></div>
+    <p id="tax-message" class="lock-message">Every buy and every sell of $ZKAT pays a trading tax inside the swap. Holders receive that tax automatically as <strong>NOCK</strong> and <strong>ZKAT</strong>. Payouts arrive as people trade. Nothing to claim.</p>
+    <div id="tax-content">
+      <div class="lock-stats"><div><span>Buy tax</span><strong id="tax-buy">—</strong><small>OF EACH BUY</small></div><div><span>Sell tax</span><strong id="tax-sell">—</strong><small>OF EACH SELL</small></div><div><span>NOCK paid to holders</span><strong id="tax-nock">—</strong><small>NOCK</small></div><div><span>ZKAT paid to holders</span><strong id="tax-zkat">—</strong><small>ZKAT</small></div></div>
+      <p class="lock-note">The overflowing pool is the live NOCK total from the same feed. BaseStonk takes its platform share from the tax; the remainder is paid to holders. This page does not send tokens or estimate any wallet’s personal share.</p>
+      <details class="nock-context"><summary>How the tax works <span aria-hidden="true">+</span></summary><div><p>The tax is taken inside the Uniswap v4 swap on Base, so it applies when $ZKAT is bought or sold. Ordinary transfers do not pay it. Pair-side fees are paid in <strong>NOCK</strong>. Token-side fees are paid in <strong>ZKAT</strong>.</p><p>Holders receive those assets automatically as other people trade. Claiming is optional on BaseStonk and is never required. Rates are set at launch and cannot be changed.</p><a href="https://basestonk.io/tokens/0x60555Ab88a0CAaf893Ab284C1332c9D0A05Af222" target="_blank" rel="noopener noreferrer">BaseStonk token page ↗</a><a href="https://docs.basestonk.io/fees" target="_blank" rel="noopener noreferrer">BaseStonk fee documentation ↗</a></div></details>
+    </div>
+    <div class="lock-source"><span id="tax-updated">Waiting for source data</span><a href="https://basestonk.io/tokens/0x60555Ab88a0CAaf893Ab284C1332c9D0A05Af222" target="_blank" rel="noopener noreferrer">Token page ↗</a></div>
   </section>
   <section class="dev-lock" aria-labelledby="dev-lock-heading">
     <div class="lock-header"><div><p class="story-eyebrow">PUBLIC WALLET · LIVE VESTING DATA</p><h2 id="dev-lock-heading">The dev-buy lock.</h2></div><span id="lock-state" class="lock-state">CHECKING</span></div>
@@ -31,11 +41,11 @@
     <p class="story-eyebrow">THE PROOF BEHIND THE PUNCHLINE</p>
     <h2 id="nock-heading">Serious cryptography.<br><em>Deeply unserious cat.</em></h2>
     <p class="story-copy">Nockchain uses zero-knowledge proofs in its proof-of-work mining. Its vision brings useful computation and privacy together. $ZKat turns that inspiration into a cat with absolutely nothing to disclose.</p>
-    <div class="nock-principles"><span>ZERO KNOWLEDGE</span><span>PRIVACY AS A PRINCIPLE</span><span>NOCK REWARDS</span></div>
+    <div class="nock-principles"><span>ZERO KNOWLEDGE</span><span>1% TRADING TAX</span><span>NOCK + ZKAT</span></div>
     <blockquote class="nock-quote"><p>“It’s sound money backed by useful cryptographic work.”</p><cite><a href="https://www.nockchain.org/manifesto" target="_blank" rel="noopener noreferrer">Nockchain Manifesto <span aria-hidden="true">↗</span></a></cite></blockquote>
-    <details class="nock-context"><summary>Why the name? <span aria-hidden="true">+</span></summary><div><p><strong>ZK</strong> is the zero-knowledge reference. <strong>Kat</strong> is the punchline. Nockchain’s miners produce proofs of computation; our cat appears to have no computation to prove.</p><p>$ZKat is a Nockchain-inspired memecoin on Base, with NOCK rewards reported by BaseStonk. The privacy theme reflects Nockchain’s vision: its current docs say private transactions are still in development, and mining proofs do not hide transaction values or chain state.</p><a href="https://docs.nockchain.org/" target="_blank" rel="noopener noreferrer">Read Nockchain’s current documentation ↗</a><a href="https://www.nockchain.org/writings/puzzle" target="_blank" rel="noopener noreferrer">How Nockchain’s ZK proof-of-work works ↗</a></div></details>
+    <details class="nock-context"><summary>Why the name? <span aria-hidden="true">+</span></summary><div><p><strong>ZK</strong> is the zero-knowledge reference. <strong>Kat</strong> is the punchline. Nockchain’s miners produce proofs of computation; our cat appears to have no computation to prove.</p><p>$ZKat is a Nockchain-inspired memecoin on Base. Holders receive NOCK and ZKAT from the trading tax, as reported by BaseStonk. The privacy theme reflects Nockchain’s vision: its current docs say private transactions are still in development, and mining proofs do not hide transaction values or chain state.</p><a href="https://docs.nockchain.org/" target="_blank" rel="noopener noreferrer">Read Nockchain’s current documentation ↗</a><a href="https://www.nockchain.org/writings/puzzle" target="_blank" rel="noopener noreferrer">How Nockchain’s ZK proof-of-work works ↗</a></div></details>
   </section>
-
+  <footer class="site-foot"><span>$ZKAT on Base. Inspired by Nockchain.</span><a href="https://basestonk.io/tokens/0x60555Ab88a0CAaf893Ab284C1332c9D0A05Af222" target="_blank" rel="noopener noreferrer">BaseStonk token page ↗</a></footer>
 </main>
 <script src="/locks.js" defer></script><script src="/app.js" defer></script><script src="/pool.js" defer></script>
 </body>

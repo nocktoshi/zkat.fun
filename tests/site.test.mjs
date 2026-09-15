@@ -15,6 +15,9 @@ test('page, referenced assets, MIME types and method handling',async()=>{
  assert.equal(response.status,200);
  const html=await response.text();
  assert.ok(html.includes(CA));assert.ok(!html.includes('meme-card'));
+ assert.ok(html.includes('The trading tax.'));
+ assert.ok(html.includes('Holders receive that tax automatically as'));
+ assert.ok(html.includes('https://basestonk.io/tokens/'+CA));
  for(const [,path] of html.matchAll(/(?:src|href)="(\/[^\"]*)"/g)){
   const r=await app.fetch(new Request('https://test.invalid'+path));
   assert.equal(r.status,200,path);assert.ok((await r.arrayBuffer()).byteLength>0);
@@ -74,6 +77,47 @@ test('vesting records validate independently from rewards and use token decimals
   fixture={token:{...fixture.token,chainState:{...state,vault:null,vesting:{schedules:[]}}}};
   assert.equal((await (await (await fresh()).fetch(request())).json()).devLock.status,'none');
  }finally{globalThis.fetch=original}
+});
+
+test('tax rates and ZKAT payouts validate independently from NOCK rewards',async()=>{
+ const original=globalThis.fetch;
+ const request=()=>new Request('https://test.invalid/api/rewards');
+ try{
+  globalThis.fetch=async()=>Response.json({token:{...valid.token,buyTaxBps:100,sellTaxBps:100,rewardsToken:'12891106253369609548515358'}});
+  const data=await (await (await fresh()).fetch(request())).json();
+  assert.equal(data.tax.status,'reported');assert.equal(data.tax.buyBps,100);assert.equal(data.tax.sellBps,100);
+  assert.equal(data.tax.tokenRewards.symbol,'ZKAT');assert.equal(data.tax.tokenRewards.decimals,18);
+  assert.equal(data.tax.tokenRewards.totalRaw,'12891106253369609548515358');assert.equal(data.symbol,'NOCK');assert.equal(data.decimals,16);
+  globalThis.fetch=async()=>Response.json({token:{...valid.token,buyTaxBps:100,sellTaxBps:100,rewardsToken:'nope'}});
+  const noToken=await (await (await fresh()).fetch(request())).json();
+  assert.equal(noToken.tax.status,'reported');assert.equal(noToken.tax.tokenRewards,null);assert.equal(noToken.totalRaw,valid.token.rewardsPair);
+  globalThis.fetch=async()=>Response.json({token:{...valid.token,buyTaxBps:-1,sellTaxBps:100}});
+  const bad=await (await (await fresh()).fetch(request())).json();
+  assert.equal(bad.tax.status,'unavailable');assert.equal(bad.totalRaw,valid.token.rewardsPair);
+ }finally{globalThis.fetch=original}
+});
+
+test('tax UI fills live rates, ZKAT totals, and stale/unavailable states',()=>{
+ const elements=new Map();
+ const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',dataset:{},addEventListener(){}});return elements.get(id)};
+ const events=[];let next;
+ const context=vm.createContext({document:{hidden:false,getElementById:el,querySelector:el,addEventListener(){}},window:{dispatchEvent:e=>{if(e.type==='zkat:reward')events.push(e)}},navigator:{},CustomEvent:class{constructor(type,data={}){this.type=type;this.detail=data.detail}},AbortSignal,setTimeout:()=>1,clearTimeout(){},setInterval(){},fetch:async()=>{if(next instanceof Error)throw next;return{ok:true,json:async()=>next}},Date,BigInt});
+ vm.runInContext(readFileSync('public/app.js','utf8').replace('\nrefresh();','\n'),context);
+ const refresh=()=>vm.runInContext('refresh()',context);
+ return (async()=>{
+  next={contract:CA,symbol:'NOCK',decimals:16,totalRaw:'1000000000000000000',updatedAt:valid.token.updatedAt,tax:{status:'reported',buyBps:100,sellBps:100,tokenRewards:{symbol:'ZKAT',decimals:18,totalRaw:'12891106253369609548515358'}}};
+  await refresh();
+  assert.equal(el('tax-state').textContent,'LIVE TAX');assert.equal(el('tax-buy').textContent,'1%');assert.equal(el('tax-sell').textContent,'1%');
+  assert.equal(el('tax-nock').textContent,'100.00');assert.equal(el('tax-zkat').textContent,'12,891,106.25');assert.equal(el('total').textContent,'100.00');assert.equal(events.length,0);
+  next={...next,tax:{status:'reported',buyBps:100,sellBps:100,tokenRewards:{symbol:'ZKAT',decimals:18,totalRaw:'22891106253369609548515358'}}};
+  await refresh();
+  assert.equal(events.length,0);assert.equal(el('tax-nock').textContent,'100.00');assert.equal(el('tax-zkat').textContent,'22,891,106.25');
+  next=new Error('offline');await refresh();
+  assert.equal(el('tax-state').textContent,'STALE DATA');assert.equal(el('tax-nock').textContent,'100.00');assert.equal(el('tax-zkat').textContent,'22,891,106.25');
+  next={contract:CA,symbol:'NOCK',decimals:16,totalRaw:'1000000000000000000',updatedAt:'2026-09-13T08:01:49.043Z',tax:{status:'unavailable'}};
+  await refresh();
+  assert.equal(el('tax-state').textContent,'UNAVAILABLE');assert.equal(el('tax-buy').textContent,'—');assert.equal(el('tax-nock').textContent,'—');assert.equal(el('total').textContent,'100.00');
+ })();
 });
 
 test('vesting UI distinguishes active, ended, unavailable and stale states',()=>{
